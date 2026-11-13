@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hola Mundo</title>
+  <style>
+    /* Paleta de seis colores: tres base + tres de apoyo */
+    :root {
+      --noche: #101c2c;    /* fondo profundo */
+      --pizarra: #1b2f45;  /* superficie / tarjetas */
+      --dorado: #c9a55c;   /* acento principal */
+      --marfil: #f4efe6;   /* texto principal */
+      --niebla: #a3b2c2;   /* texto tenue y bordes */
+      --salvia: #7fa38c;   /* acento secundario */
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      color: var(--marfil);
+      background:
+        radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--dorado) 18%, transparent), transparent 55%),
+        linear-gradient(160deg, color-mix(in srgb, var(--pizarra) 80%, var(--noche)) 0%, var(--noche) 55%, color-mix(in srgb, var(--noche) 70%, #000) 100%);
+    }
+
+    .tarjeta {
+      width: 100%;
+      max-width: 34rem;
+      padding: clamp(2rem, 6vw, 3.5rem);
+      text-align: center;
+      background: color-mix(in srgb, var(--pizarra) 70%, transparent);
+      border: 1px solid color-mix(in srgb, var(--niebla) 22%, transparent);
+      border-radius: 18px;
+      box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-size: clamp(2.25rem, 8vw, 4.5rem);
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+    }
+
+    .linea {
+      width: 6rem;
+      height: 2px;
+      margin: 1.5rem auto 0;
+      background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+    }
+
+    p {
+      margin: 1.25rem 0 0;
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
+      line-height: 1.7;
+      color: var(--niebla);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .acciones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    button {
+      font: inherit;
+      font-size: 0.875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .btn-primario {
+      border: 1px solid var(--dorado);
+      background: var(--dorado);
+      color: var(--noche);
+      font-weight: 600;
+    }
+
+    .btn-secundario {
+      border: 1px solid color-mix(in srgb, var(--salvia) 70%, transparent);
+      background: transparent;
+      color: var(--salvia);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px -12px rgba(0, 0, 0, 0.8);
+    }
+
+    .btn-primario:hover {
+      background: color-mix(in srgb, var(--dorado) 82%, var(--marfil));
+    }
+
+    .btn-secundario:hover {
+      background: color-mix(in srgb, var(--salvia) 16%, transparent);
+    }
+
+    /* Ventana de edición de la paleta */
+    .editor {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      width: min(19rem, calc(100vw - 3rem));
+      padding: 1.1rem 1.25rem 1.25rem;
+      background: color-mix(in srgb, var(--pizarra) 88%, var(--noche));
+      border: 1px solid color-mix(in srgb, var(--dorado) 35%, transparent);
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -20px rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      font-size: 0.8rem;
+    }
+
+    .editor[hidden] {
+      display: none;
+    }
+
+    .editor-cabecera {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .editor-cabecera h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .cerrar {
+      border: none;
+      background: transparent;
+      color: var(--niebla);
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 0.25rem 0.4rem;
+      border-radius: 8px;
+      text-transform: none;
+    }
+
+    .cerrar:hover {
+      color: var(--marfil);
+      background: color-mix(in srgb, var(--niebla) 15%, transparent);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .campo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.35rem 0;
+    }
+
+    .campo + .campo {
+      border-top: 1px solid color-mix(in srgb, var(--niebla) 12%, transparent);
+    }
+
+    .campo label {
+      flex: 1;
+      color: var(--marfil);
+    }
+
+    .campo label span {
+      display: block;
+      color: var(--niebla);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    input[type="color"] {
+      width: 2.6rem;
+      height: 1.9rem;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--niebla) 35%, transparent);
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 3px;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: none;
+      border-radius: 5px;
+    }
+
+    input[type="color"]::-moz-color-swatch {
+      border: none;
+      border-radius: 5px;
+    }
+
+    .editor-pie {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .editor-pie button {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 30rem) {
+      .editor {
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="tarjeta">
+    <h1>¡Hola Mundo!</h1>
+    <div class="linea"></div>
+    <p>Lo propio</p>
+    <div class="acciones">
+      <button class="btn-primario" id="abrir-editor">Editar paleta</button>
+      <button class="btn-secundario" id="abrir-editor-2">Ver colores</button>
+    </div>
+  </main>
+
+  <aside class="editor" id="editor" hidden aria-label="Ventana de edición de la paleta">
+    <div class="editor-cabecera">
+      <h2>Ventana de edición</h2>
+      <button class="cerrar" id="cerrar-editor" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="campo">
+      <label for="c-noche">Noche<span>Fondo</span></label>
+      <input type="color" id="c-noche" data-var="noche">
+    </div>
+    <div class="campo">
+      <label for="c-pizarra">Pizarra<span>Superficie</span></label>
+      <input type="color" id="c-pizarra" data-var="pizarra">
+    </div>
+    <div class="campo">
+      <label for="c-dorado">Dorado<span>Acento principal</span></label>
+      <input type="color" id="c-dorado" data-var="dorado">
+    </div>
+    <div class="campo">
+      <label for="c-marfil">Marfil<span>Texto</span></label>
+      <input type="color" id="c-marfil" data-var="marfil">
+    </div>
+    <div class="campo">
+      <label for="c-niebla">Niebla<span>Texto tenue</span></label>
+      <input type="color" id="c-niebla" data-var="niebla">
+    </div>
+    <div class="campo">
+      <label for="c-salvia">Salvia<span>Acento secundario</span></label>
+      <input type="color" id="c-salvia" data-var="salvia">
+    </div>
+
+    <div class="editor-pie">
+      <button class="btn-secundario" id="restablecer">Restablecer</button>
+    </div>
+  </aside>
+
+  <script>
+    // Paleta por defecto (la misma del CSS)
+    const PALETA = {
+      noche: "#101c2c",
+      pizarra: "#1b2f45",
+      dorado: "#c9a55c",
+      marfil: "#f4efe6",
+      niebla: "#a3b2c2",
+      salvia: "#7fa38c"
+    };
+
+    const CLAVE = "lopropio-paleta";
+    const raiz = document.documentElement;
+    const campos = document.querySelectorAll('input[data-var]');
+    const editor = document.getElementById("editor");
+
+    function aplicar(nombre, valor) {
+      raiz.style.setProperty("--" + nombre, valor);
+    }
+
+    function pintarCampos(paleta) {
+      campos.forEach((campo) => {
+        const nombre = campo.dataset.var;
+        campo.value = paleta[nombre] || PALETA[nombre];
+        aplicar(nombre, campo.value);
+      });
+    }
+
+    function guardar() {
+      const paleta = {};
+      campos.forEach((campo) => (paleta[campo.dataset.var] = campo.value));
+      try {
+        localStorage.setItem(CLAVE, JSON.stringify(paleta));
+      } catch (e) {
+        // Si el navegador bloquea el almacenamiento, solo se aplica en vivo
+      }
+    }
+
+    function leer() {
+      try {
+        const guardada = JSON.parse(localStorage.getItem(CLAVE) || "null");
+        return guardada ? { ...PALETA, ...guardada } : { ...PALETA };
+      } catch (e) {
+        return { ...PALETA };
+      }
+    }
+
+    pintarCampos(leer());
+
+    campos.forEach((campo) => {
+      campo.addEventListener("input", () => {
+        aplicar(campo.dataset.var, campo.value);
+        guardar();
+      });
+    });
+
+    document.getElementById("restablecer").addEventListener("click", () => {
+      pintarCampos(PALETA);
+      guardar();
+    });
+
+    const abrir = () => {
+      editor.hidden = false;
+      document.getElementById("abrir-editor").textContent = "Ocultar paleta";
+    };
+    const cerrar = () => {
+      editor.hidden = true;
+      document.getElementById("abrir-editor").textContent = "Editar paleta";
+    };
+
+    document.getElementById("abrir-editor").addEventListener("click", () => {
+      editor.hidden ? abrir() : cerrar();
+    });
+    document.getElementById("abrir-editor-2").addEventListener("click", abrir);
+    document.getElementById("cerrar-editor").addEventListener("click", cerrar);
+  </script>
+</body>
+</html>
